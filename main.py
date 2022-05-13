@@ -21,8 +21,12 @@ def do_something(sc):
         url = t.public_url
         print(url)
         if url != lastAddress:
-            lastAddress = url
-            EmailSender(url).send_email()
+            try:
+                EmailSender(url).send_email()
+            except:
+                print("Fail with sender")
+            else:
+                lastAddress = url
 
     sc.enter(5, 1, do_something, (sc,))
 

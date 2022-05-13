@@ -1,8 +1,9 @@
-import smtplib
-from pathlib import Path
-from dotenv import load_dotenv
 import os
+import smtplib
+import ssl
+from pathlib import Path
 
+from dotenv import load_dotenv
 
 dotenv_path = Path('./.env.local')
 load_dotenv(dotenv_path=dotenv_path)
@@ -19,7 +20,13 @@ class EmailSender:
         self.message = message
 
     def send_email(self):
-        with smtplib.SMTP(self.smtp_server, self.port) as server:
-            # server.login(sender_email, password)
-            server.sendmail(self.sender_email,
-                            self.receiver_email, self.message)
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL(self.smtp_server, self.port, context=context) as server:
+            server.login(self.sender_email, self.password)
+            try:
+                server.sendmail(self.sender_email, self.receiver_email, self.message)
+                print("Sending email")
+            except:
+                print("Fail to send email")
+
+            server.quit()
