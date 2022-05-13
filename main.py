@@ -5,7 +5,7 @@ import ngrok
 from dotenv import load_dotenv
 import os
 
-from email import Email
+from email_sender import EmailSender
 
 dotenv_path = Path('./.env.local')
 load_dotenv(dotenv_path=dotenv_path)
@@ -22,7 +22,7 @@ def do_something(sc):
         print(url)
         if url != lastAddress:
             lastAddress = url
-            Email(url).sendEmail()
+            EmailSender(url).send_email()
 
     sc.enter(5, 1, do_something, (sc,))
 
